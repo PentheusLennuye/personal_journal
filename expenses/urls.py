@@ -8,10 +8,13 @@ from django.urls import path
 
 from . import views
 
-app_name = "cost_journal"  # pylint: disable=C0103
+# pylint: disable=E1101
+
+app_name = "expenses"  # pylint: disable=C0103
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("<int:expense_id>/", views.expense, name="expense"),
-    path("<int:expense_id>/edit", views.expense_edit, name="edit_expense"),
+    path("", views.IndexView.as_view(), name="index"),
+    path("<int:pk>/", views.DetailView.as_view(), name="expense"),
+    path("<int:pk>/edit",
+         views.ExpenseEditView.as_view(), name="edit_expense"),
     path("<int:expense_id>/save", views.expense_save, name="save_expense")
 ]

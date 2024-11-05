@@ -6,7 +6,7 @@
   <tr>
     <td>{{ expense.date }}</td>
     <td>${{ expense.expense }}</td>
-    <td><a href="{% url 'cost_journal:expense' expense.id %}">
+    <td><a href="{% url 'expenses:expense' expense.id %}">
         {{ expense.description }}</a></td>
   </tr>
   {% endfor %}

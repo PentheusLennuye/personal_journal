@@ -6,12 +6,20 @@
 <body>
 
 <h1>Expense</h1>
-<form action="{% url 'cost_journal:save_expense' expense.id %}" method="POST">
+<form action="{% url 'expenses:save_expense' expense.id %}" method="POST">
     {% csrf_token %}
     <fieldset>
         <p>Date: {{ expense.date }}</p>
         <legend><em>{{ expense.vendor}} ${{ expense.expense }}</em></legend>
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label for="expense_type">Type</label>
+        <select id="expense_type" name="expense_type">
+        {% for expense_type in expense_types %}
+            <option value="{{ expense_type.id }}" {% if expense_type == expense.expense_type %}selected{% endif %}>
+                {{ expense_type.expense_type }}
+            </option>
+        {% endfor %}
+        </select><br/>
         <label for="vendor">Vendor</label>
         <select id="vendor" name="vendor">
         {% for vendor in vendors %}
