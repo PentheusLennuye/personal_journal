@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ expense.vendor }} {{ expense.date }}</title>
+</head>
+<body>
+
+<h1>Expense</h1>
+<form action="{% url 'cost_journal:save_expense' expense.id %}" method="POST">
+    {% csrf_token %}
+    <fieldset>
+        <p>Date: {{ expense.date }}</p>
+        <legend><em>{{ expense.vendor}} ${{ expense.expense }}</em></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label for="vendor">Vendor</label>
+        <select id="vendor" name="vendor">
+        {% for vendor in vendors %}
+            <option value="{{ vendor.id }}" {% if vendor == expense.vendor %}selected{% endif %}>
+                {{ vendor.vendor }}
+            </option>
+        {% endfor %}
+        </select><br/>
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description" value="{{ expense.description}}"/><br/>
+        <label for="cost">Cost $</label>
+        <input type="text" name="cost" id="cost" value="{{ expense.expense}}"/><br/>
+    </fieldset>
+    <input type="submit" value="Save"/>
+</form>
+
+</body>
+</html>

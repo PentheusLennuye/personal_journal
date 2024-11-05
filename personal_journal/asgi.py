@@ -1,5 +1,5 @@
 """
-ASGI config for self_discipline project.
+ASGI config for personal_journal project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "self_discipline.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "personal_journal.settings")
 
 application = get_asgi_application()

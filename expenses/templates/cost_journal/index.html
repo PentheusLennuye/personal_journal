@@ -1,0 +1,16 @@
+
+{% if expenses %}
+<table>
+  <tr><th>Time</th><th>Cost</th><th>Description</th></tr>
+  {% for expense in expenses %}
+  <tr>
+    <td>{{ expense.date }}</td>
+    <td>${{ expense.expense }}</td>
+    <td><a href="{% url 'cost_journal:expense' expense.id %}">
+        {{ expense.description }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+  <p>No expenses registered</p>
+{% endif %}

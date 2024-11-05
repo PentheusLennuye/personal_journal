@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<h1>Expense</h1>
+<div class="card">
+    <table>
+        <tr><th>Date</th><td>{{ expense.date }}</td></tr>
+        <tr><th>Type</th><td>{{ expense.expense_type }}</td></tr>
+        <tr><th>Vendor</th><td>{{ expense.vendor }}</td></tr>
+        <tr><th>Description</th><td>{{ expense.description}}</td></tr>
+        <tr><th>Cost</th><td>${{ expense.expense}}</td></tr>
+    </table>
+    <a href="{% url 'cost_journal:edit_expense' expense.id %}">Edit</a>
+</div>
+</html>
