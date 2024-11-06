@@ -27,10 +27,10 @@ USER root
 RUN apk del .build-deps
 
 # Set the entrypoint
-WORKDIR /app
 COPY development/entrypoint.sh /opt/entrypoint.sh
 RUN chmod +x /opt/entrypoint.sh
 
 # Run the application as non-root -----------------------------------------
+WORKDIR /app
 USER appuser
 CMD ["/opt/entrypoint.sh"]

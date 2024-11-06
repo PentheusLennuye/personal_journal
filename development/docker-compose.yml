@@ -6,9 +6,9 @@ services:
       db:
         condition: "service_healthy"
     env_file:
-      - dev.env
-      - creds.env
-    image: "localhost/personal_journal"
+      - "development/dev.env"
+      - "development/creds.env"
+    image: "personal_journal_dev"
     ports:
       - 8080:8080
     tty: true
@@ -17,14 +17,14 @@ services:
   db:
     container_name: "db"
     env_file:
-      - dev.env
-      - creds.env
+      - "development/dev.env"
+      - "development/creds.env"
     healthcheck:
       test: "pg_isready --username=$$DB_USER --dbname=$$DB_NAME"
       interval: "10s"
       timeout: "5s"
       retries: 10
-    image: "postgres:$$POSTGRES_VERSION-alpine"
+    image: "postgres:${POSTGRES_VERSION}-alpine"
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
 

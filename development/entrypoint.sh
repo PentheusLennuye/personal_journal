@@ -17,6 +17,7 @@ cat <<EOPGP >> $HOME/.pj_pgpass
 $DB_HOST:$DB_PORT:$DB_USER:$DB_PASS
 EOPGP
 
+ls -1
 ./manage.py makemigrations
 ./manage.py migrate
 ./manage.py runserver
