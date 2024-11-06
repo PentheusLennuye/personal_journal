@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 # Development
-creds.env.example
+creds.env

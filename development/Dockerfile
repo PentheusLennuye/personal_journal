@@ -16,7 +16,7 @@ USER appuser
 WORKDIR /tmp
 ENV PATH="/home/appuser/.local/bin:$PATH"
 RUN pipx install --include-deps poetry poetry-plugin-export
-COPY ./development/pyproject.toml ./development/poetry.lock ./
+COPY ./pyproject.toml ./poetry.lock ./
 RUN poetry config virtualenvs.create false && \
     poetry config warnings.export false && \
     poetry export --with=dev --output=requirements.txt && \
