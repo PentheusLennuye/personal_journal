@@ -1,0 +1,33 @@
+---
+name: personal_journal
+services:
+  app:
+    depends_on:
+      db:
+        condition: "service_healthy"
+    env_file:
+      - dev.env
+      - creds.env
+    image: "localhost/personal_journal"
+    ports:
+      - 8080:8080
+    tty: true
+    volumes:
+      - "./:/app"
+  db:
+    container_name: "db"
+    env_file:
+      - dev.env
+      - creds.env
+    healthcheck:
+      test: "pg_isready --username=$$DB_USER --dbname=$$DB_NAME"
+      interval: "10s"
+      timeout: "5s"
+      retries: 10
+    image: "postgres:$$POSTGRES_VERSION-alpine"
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+
+volumes:
+  postgres_data: {}
+    
