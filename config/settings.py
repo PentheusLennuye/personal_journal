@@ -16,10 +16,11 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(":")
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "OPTIONS": {
-            "service": "personal_journal",
-            "passfile": ".pgpass"
-        }
+        "NAME": os.environ["DB_NAME"],
+        "USER": os.environ["DB_USER"],
+        "PASSWORD": os.environ["DB_PASS"],
+        "HOST": os.environ["DB_HOST"],
+        "PORT": os.environ["DB_PORT"]
     }
 }
 
@@ -63,7 +64,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "personal_journal.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -91,7 +92,9 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images) -------------------------------------
-STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "static/")
+STATIC_URL = "static/"
+STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "/tmp")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static/"),]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

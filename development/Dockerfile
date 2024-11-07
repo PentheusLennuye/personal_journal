@@ -26,7 +26,7 @@ RUN poetry config virtualenvs.create false && \
 USER root
 RUN apk del .build-deps
 
-# Set the entrypoint
+# Set the entrypoint -----------------------------------------------------
 COPY development/entrypoint.sh /opt/entrypoint.sh
 RUN chmod +x /opt/entrypoint.sh
 
