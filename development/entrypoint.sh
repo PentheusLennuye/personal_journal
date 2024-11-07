@@ -13,11 +13,11 @@ dbname=$DB_NAME
 port=$DB_PORT
 EOPGS
 
-cat <<EOPGP >> $HOME/.pj_pgpass
+cat <<EOPGP >> /app/.pgpass
 $DB_HOST:$DB_PORT:$DB_USER:$DB_PASS
 EOPGP
 
-ls -1
+./manage.py createsuperuser --email admin@admin.com --noinput
 ./manage.py makemigrations
 ./manage.py migrate
 ./manage.py runserver

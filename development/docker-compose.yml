@@ -2,6 +2,7 @@
 name: personal_journal
 services:
   app:
+    container_name: "personal_journal-app"
     depends_on:
       db:
         condition: "service_healthy"
@@ -15,7 +16,7 @@ services:
     volumes:
       - "./:/app"
   db:
-    container_name: "db"
+    container_name: "personal_journal-db"
     env_file:
       - "development/dev.env"
       - "development/creds.env"

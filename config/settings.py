@@ -18,7 +18,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "OPTIONS": {
             "service": "personal_journal",
-            "passfile": ".pj_pgpass"
+            "passfile": ".pgpass"
         }
     }
 }
