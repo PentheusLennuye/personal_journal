@@ -14,6 +14,7 @@ from .models import Expense, ExpenseType, Vendor
 
 class IndexView(generic.ListView):
     """Return a list of expenses in order of date."""
+
     template_name = "expenses/index.html"
     context_object_name = "expenses"  # Assign a template var to queryset.
 
@@ -24,12 +25,14 @@ class IndexView(generic.ListView):
 
 class DetailView(generic.DetailView):
     """Display the expense read-only form for an id."""
+
     model = Expense
     template_name = "expenses/expense.html"
 
 
 class ExpenseEditView(generic.DetailView):
     """Display the expense write form for an id."""
+
     model = Expense
     template_name = "expenses/expense_form.html"
 
@@ -50,9 +53,16 @@ def expense_save(request, expense_id):
     try:
         vendor = Vendor.objects.get(pk=request.POST["vendor"])
     except (KeyError, Vendor.DoesNotExist):
-        return render(request, "expenses/expense_form.html",
-                      {"expense": e, "vendors": v, "expense_types": t,
-                       "error_message": "Invalid vendor"})
+        return render(
+            request,
+            "expenses/expense_form.html",
+            {
+                "expense": e,
+                "vendors": v,
+                "expense_types": t,
+                "error_message": "Invalid vendor",
+            },
+        )
     e.description = request.POST["description"]
     e.expense = request.POST["cost"]
     e.vendor = vendor

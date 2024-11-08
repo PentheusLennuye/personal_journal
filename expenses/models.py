@@ -7,6 +7,7 @@ from django.db import models
 
 class CostCategory(models.Model):
     """The Kakeibo Category System."""
+
     # General (Essentials: food, utilities, healthcare, rent, transport)
     # Wants (Travel, Clothing, Dining Out, Unessential transport)
     # Culture (Museums, Tickets, Books, Zoos)
@@ -18,11 +19,13 @@ class CostCategory(models.Model):
 
     class Meta:
         """CostCategory Overrides."""
+
         verbose_name_plural = "cost categories"
 
 
 class ExpenseType(models.Model):
     """Travel, Public Transport, Snacks, Postage"""
+
     expense_type = models.CharField(max_length=50)
     category = models.ForeignKey(CostCategory, on_delete=models.PROTECT)
 
@@ -32,6 +35,7 @@ class ExpenseType(models.Model):
 
 class Vendor(models.Model):
     """The Supplier of the expense."""
+
     vendor = models.CharField(max_length=128)
 
     def __str__(self):
@@ -40,6 +44,7 @@ class Vendor(models.Model):
 
 class Expense(models.Model):
     """The ledger entry."""
+
     date = models.DateTimeField("receipt time")
     expense_type = models.ForeignKey(ExpenseType, on_delete=models.PROTECT)
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)

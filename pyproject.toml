@@ -10,11 +10,15 @@ python = "^3.11"
 django = "5.1"
 psycopg-binary = "^3.2.3"
 psycopg = "^3.2.3"
+invoke = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.3.1"
 black = "^24.10.0"
 pydocstyle = "^6.3.0"
+
+[tool.black]
+line-length = 79
 
 [tool.pylint]
 ignore = ["manage.py"]

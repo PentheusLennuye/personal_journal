@@ -80,7 +80,10 @@ class Migration(migrations.Migration):
                 ),
                 ("date", models.DateTimeField(verbose_name="receipt time")),
                 ("description", models.CharField(max_length=256)),
-                ("expense", models.DecimalField(decimal_places=2, max_digits=6)),
+                (
+                    "expense",
+                    models.DecimalField(decimal_places=2, max_digits=6),
+                ),
                 (
                     "expense_type",
                     models.ForeignKey(
