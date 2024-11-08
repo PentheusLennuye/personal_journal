@@ -1,22 +1,22 @@
 ---
-name: personal_journal
+name: personal-journal
 services:
   app:
-    container_name: "personal_journal-app"
+    container_name: "personal-journal-app"
     depends_on:
       db:
         condition: "service_healthy"
     env_file:
       - "development/dev.env"
       - "development/creds.env"
-    image: "personal_journal_dev"
+    image: "personal-journal:${PROJECT_VERSION}-dev"
     ports:
       - 8000:8000
     tty: true
     volumes:
       - "./:/app"
   db:
-    container_name: "personal_journal-db"
+    container_name: "personal-journal-db"
     env_file:
       - "development/dev.env"
       - "development/creds.env"
@@ -28,6 +28,7 @@ services:
     image: "postgres:${POSTGRES_VERSION}-alpine"
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
+      - "./backup/:/backup"
 
 volumes:
   postgres_data: {}

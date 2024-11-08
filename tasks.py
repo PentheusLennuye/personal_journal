@@ -3,9 +3,14 @@ Invoke tasks
 """
 
 import os
+import re
 import sys
 
-import toml
+try:
+    import toml
+except ModuleNotFoundError:
+    print("import toml triggered a ModuleNotFound Error. Are you in a shell?")
+    sys.exit(254)
 
 from invoke import task
 
@@ -20,9 +25,11 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 @task
 def build(context, env="development", repo_host=None, repo_owner=None):
     """
-    Build the project Docker image. If there is no repo_host, then the docker
-    image will be built and stored locally. Otherwise, the build tag will
-    be {repo_host}/{repo_owner}/{project-name}:{version}.
+    Build the project Docker image.
+
+    If there is no repo_host, then the docker image will be built and stored
+    locally. Otherwise, the build tag will be
+    {repo_host}/{repo_owner}/{project-name}:{version}.
 
     {version} is taken from pyproject.toml
     """
@@ -71,12 +78,12 @@ def is_pyproject_sane(data):
         return False, "pyproject does not have 'version' in [tool.poetry]"
     if "version" not in data["tool"]["poetry"]:
         return False, "pyproject does not have 'version' in [tool.poetry]"
-    return True
+    return True, None
 
 
 def run_command(context, command):
     """Run a command inside poetry."""
-    return context.run(command)
+    return context.run(command, shell=SHELL)
 
 
 @task
@@ -85,22 +92,24 @@ def debug(context, env="development"):
     return docker_compose(context, "up", env)
 
 
-def docker_compose(context, command, env, **kwargs):
+def docker_compose(context, command, env="development", **kwargs):
     """Run a docker compose command."""
+    _, proj_ver = get_project_version_or_die()
     pg_ver = get_postgres_version(context, env)
     command = (
-        f"POSTGRES_VERSION={pg_ver} docker compose -p {PROJECT_NAME} "
+        f"POSTGRES_VERSION={pg_ver} PROJECT_VERSION={proj_ver} "
+        f"docker compose -p {PROJECT_NAME} "
         f"--project-directory {CURRENT_DIR} "
         f"-f {env}/docker-compose.yml {command}"
     )
-    print(command)
     return context.run(command, shell=SHELL, **kwargs)
 
 
 def get_postgres_version(context, env="development"):
     """Grab the postgres_version from the correct dev.env file."""
     command = f"grep POSTGRES_VER {env}/dev.env"
-    return context.run(command, echo=False).stdout.split("=")[1].strip()
+    return context.run(
+        command, echo=False, shell=SHELL).stdout.split("=")[1].strip()
 
 
 @task
@@ -128,7 +137,7 @@ def restart(context, env="development"):
 
 
 @task
-def cli(context, env="development", container="app", rshell="sh"):
+def cli(context, container="app", rshell="sh", env="development"):
     """Open a shell into a running container"""
     return docker_compose(context, f"exec {container} {rshell}", env, pty=True)
 
@@ -188,3 +197,45 @@ def lint(context):
     flake8(context)
     print("Pydocstyle linting")
     pydocstyle(context)
+
+
+# ---------------------------------------------------------------------------
+# Backup and Restore Development Data
+# ---------------------------------------------------------------------------
+
+@task
+def backup(context):
+    """Back up the database"""
+    pg_user = get_pg_user()
+    command = (f"exec db pg_dumpall -U {pg_user} > "
+               f"backup/{PROJECT_NAME}-$(date +%Y%m%d).bkp")
+    docker_compose(context, command)
+
+
+def get_pg_user():
+    """Get the POSTGRES username for the backup and restore."""
+    pg_user_re = re.compile(r"^DB_USER=(.*)\b")
+    with open(f"{CURRENT_DIR}/development/creds.env", encoding="utf-8") as fh:
+        for line in fh.readlines():
+            match = pg_user_re.match(line)
+            if match:
+                return match.group(1)
+    return None
+
+
+@task
+def restore(context, filename=None):
+    """
+    Restore Netbox from netbox.bkp. This is used when Netbox is NOT started.
+    """
+    pg_user = get_pg_user()
+    if filename is None:
+        filename = f"backup/{PROJECT_NAME}-$(date +%Y%m%d).bkp"
+
+    # Blow up the DB
+    command = (f"exec db psql -U {pg_user} postgres -c "
+               f"'DROP DATABASE {PROJECT_NAME}'")
+    docker_compose(context, command)
+
+    command = f"exec db psql -U {pg_user} -f {filename} postgres"
+    docker_compose(context, command)

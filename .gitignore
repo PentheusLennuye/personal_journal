@@ -163,3 +163,4 @@ cython_debug/
 
 # Development
 creds.env
+backup/*.bkp
